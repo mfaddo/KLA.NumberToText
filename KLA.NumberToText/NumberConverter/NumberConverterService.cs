@@ -67,6 +67,7 @@ namespace KLA.NumberToText.NumberConverter
         }
         #endregion
 
+
         #region Helper Methods For Number conversion
         private string getHundreds(string subset)
         {
