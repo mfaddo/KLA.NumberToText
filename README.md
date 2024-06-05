@@ -51,7 +51,7 @@ nine hundred ninety-nine million nine hundred ninety-nine thousand nine hundred 
 
 
 # Scalability 
-This application is entend for 9 numbers (million) only , however by using the factories I made this app easy to extend so we can extend the app to conver Billion by three ease steps : 
+This application is designed for 9 numbers (million) only , however by using the factories I made this app easy to extend so we can extend the app to convert Billion by three ease steps : 
 
 - implement new  `IUnitGetter` type which do the needed logic as below 
 
