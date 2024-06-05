@@ -19,20 +19,18 @@ namespace KLA.NumberToText.NumberConverter
             if (!number.IsValidForConvert())
                 throw new NumberToTextException("Invalid number format");
 
-            var splitedNumber = number.Split(new char[] { ',' });
+            var numberParts = number.Split(new char[] { ',' });
 
-            string dollars = handleDollars(splitedNumber[0]);
-            string cents = handleCents(splitedNumber.Length > 1 ?
-                splitedNumber[1] : "");
+            string dollarsText = handleDollars(numberParts[0]);
+            string centsText = handleCents(numberParts.Length > 1 ?
+                numberParts[1] : "");
 
-            if (!string.IsNullOrEmpty(cents))
-            {
-                return $"{dollars} {Constants.AND} {cents}";
-            }
+            return CombineDollarsAndCents(dollarsText, centsText);
 
-            return dollars;
+            
         }
 
+        #region Main Handler
         private string handleDollars(string dollars)
         {
             StringBuilder result = new StringBuilder();
@@ -50,15 +48,7 @@ namespace KLA.NumberToText.NumberConverter
                 result.Append(getUnit(i, subsets.Count, subset));
                 i++;
             }
-
-            string stringResult = result.ToString();
-            if (string.IsNullOrWhiteSpace(stringResult.Trim()))
-                return $"{Constants.ZERO_TEXT} {Constants.DOLLAR}";
-            if (stringResult.Trim() == Constants.ONE_TEXT)
-                return $"{result}{Constants.DOLLAR}";
-            return $"{result}{Constants.DOLLARS}";
-
-
+            return FormatDollarsText(result.ToString());
         }
 
         private string handleCents(string cents)
@@ -73,25 +63,21 @@ namespace KLA.NumberToText.NumberConverter
 
             StringBuilder builder = new StringBuilder();
             builder.Append(getTens(subset));
-            string stringResult = builder.ToString();
-            if (string.IsNullOrEmpty(stringResult.Trim()))
-                return string.Empty;
-            if (stringResult.Trim() == Constants.ONE_TEXT)
-                return $"{builder} {Constants.CENT}";
-            return $"{builder} {Constants.CENTS}";
+            return FormatCentsText(builder.ToString());
         }
+        #endregion
+
+        #region Helper Methods For Number conversion
         private string getHundreds(string subset)
         {
             string number = _staticDataService.Numbers[subset.Substring(0, 1)];
-            if (!string.IsNullOrEmpty(number))
-            {
-                return $"{number} {Constants.HUNDRED} ";
-            }
-            return string.Empty;
+            return string.IsNullOrEmpty(number) ? string.Empty
+                : $"{number} {Constants.HUNDRED} ";
+
         }
         private string getTens(string number)
         {
-            StringBuilder builder = new StringBuilder();
+
             string tens = number.Substring(0, 1);
             string ones = number.Substring(1, 1);
 
@@ -99,6 +85,8 @@ namespace KLA.NumberToText.NumberConverter
                 return _staticDataService.NumbersInTeenFormat[ones];
             if (tens == Constants.ZERO_NUMBER)
                 return _staticDataService.Numbers[ones];
+
+            StringBuilder builder = new StringBuilder();
 
             builder.Append(_staticDataService.NumbersInTyFormat[tens]);
             if (ones != Constants.ZERO_NUMBER)
@@ -115,5 +103,35 @@ namespace KLA.NumberToText.NumberConverter
 
             return unitGetter.GetUnit(indexOfSubset);
         }
+        #endregion
+
+        #region Text Combinators 
+        private string CombineDollarsAndCents(string dollarsText, string centsText)
+        {
+            if (string.IsNullOrEmpty(centsText))
+                return dollarsText;
+
+            return $"{dollarsText} {Constants.AND} {centsText}";
+        }
+
+        private string FormatDollarsText(string dollarsText)
+        {
+            if (string.IsNullOrWhiteSpace(dollarsText.Trim()))
+                return $"{Constants.ZERO_TEXT} {Constants.DOLLAR}";
+            if (dollarsText.Trim() == Constants.ONE_TEXT)
+                return $"{dollarsText} {Constants.DOLLAR}";
+            return $"{dollarsText} {Constants.DOLLARS}";
+        }
+        private string FormatCentsText(string centsText)
+        {
+            if (string.IsNullOrWhiteSpace(centsText.Trim()))
+                return string.Empty;
+            if (centsText.Trim() == Constants.ONE_TEXT)
+                return $"{centsText} {Constants.CENT}";
+            return $"{centsText} {Constants.CENTS}";
+        }
+        #endregion
+
+
     }
 }
