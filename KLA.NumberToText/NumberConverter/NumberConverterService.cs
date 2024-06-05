@@ -147,8 +147,8 @@ namespace KLA.NumberToText.NumberConverter
             if (string.IsNullOrWhiteSpace(dollarsText.Trim()))
                 return $"{Constants.ZERO_TEXT} {Constants.DOLLAR}";
             if (dollarsText.Trim() == Constants.ONE_TEXT)
-                return $"{dollarsText} {Constants.DOLLAR}";
-            return $"{dollarsText} {Constants.DOLLARS}";
+                return $"{dollarsText}{Constants.DOLLAR}";
+            return $"{dollarsText}{Constants.DOLLARS}";
         }
 
         // Private method to format cents text
