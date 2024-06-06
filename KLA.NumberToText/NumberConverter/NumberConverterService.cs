@@ -145,7 +145,7 @@ namespace KLA.NumberToText.NumberConverter
         private string FormatDollarsText(string dollarsText)
         {
             if (string.IsNullOrWhiteSpace(dollarsText.Trim()))
-                return $"{Constants.ZERO_TEXT} {Constants.DOLLAR}";
+                return $"{Constants.ZERO_TEXT} {Constants.DOLLARS}";
             if (dollarsText.Trim() == Constants.ONE_TEXT)
                 return $"{dollarsText}{Constants.DOLLAR}";
             return $"{dollarsText}{Constants.DOLLARS}";
